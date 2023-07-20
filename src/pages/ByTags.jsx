@@ -122,12 +122,16 @@ function ByTags({language}) {
         getCollectionItems()
         if(user){
             getUsersByIdApi(user?.id).then(res=>{
-                console.log(res)
+                if(res.data.user.id !== Number(user?.id)){
+                    localStorage.removeItem("current_user")
+                    localStorage.removeItem(TOKEN_ACCESS)
+                    navigate("/login")
+                }
             })
                 .catch(()=>{
                     localStorage.removeItem("current_user")
                     localStorage.removeItem(TOKEN_ACCESS)
-                    window.location.href = "/login"
+                    navigate("/login")
                 })
         }
     },[])

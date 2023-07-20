@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {getCollectionItemByIdApi} from "../api/config/CollectionItemCrud.js";
 import {Button, Empty, Input, message, Space} from "antd";
@@ -49,15 +49,21 @@ function Comments({language}) {
             setComments(dataa)
         })
     },[socket])
+
+    let navigate = useNavigate()
     useEffect(()=>{
         if(user){
             getUsersByIdApi(user?.id).then(res=>{
-                console.log(res)
+                if(res.data.user.id !== Number(user?.id)){
+                    localStorage.removeItem("current_user")
+                    localStorage.removeItem(TOKEN_ACCESS)
+                    navigate("/login")
+                }
             })
                 .catch(()=>{
                     localStorage.removeItem("current_user")
                     localStorage.removeItem(TOKEN_ACCESS)
-                    window.location.href = "/login"
+                    navigate("/login")
                 })
         }
     },[])

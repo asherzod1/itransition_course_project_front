@@ -1,7 +1,7 @@
-import {Dropdown, Space, Switch, Input, AutoComplete} from 'antd';
+import {Dropdown, Space, Switch, Input, AutoComplete, Divider} from 'antd';
 import {DownOutlined, UserOutlined, MenuOutlined, LoginOutlined, UserAddOutlined, LogoutOutlined } from '@ant-design/icons';
 import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {useEffect, useState} from "react";
 import {setPrimaryColor} from "../redux/reducers/themeReducer.js";
@@ -51,10 +51,11 @@ function Navbar({language, setLanguage}) {
             key: '11',
         },
     ];
+    let navigate = useNavigate()
     const logout = ()=>{
         localStorage.removeItem("current_user")
         localStorage.removeItem(TOKEN_ACCESS)
-        window.location.reload()
+        navigate("/login")
     }
     const userDropDownForUser = [
         {
@@ -74,6 +75,10 @@ function Navbar({language, setLanguage}) {
                 </Space>
             </Link>,
             key: '16',
+        },
+        {
+            label: <h5>User: {user?.name}</h5>,
+            disabled: true,
         },
     ]
 
