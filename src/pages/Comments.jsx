@@ -8,7 +8,7 @@ import {useTranslation} from "react-i18next";
 
 let socket = null
 if(!socket){
-    socket = io.connect('http://localhost:8001')
+    socket = io.connect('wss://squeamish-shape-production.up.railway.app/')
 }
 
 function Comments({language}) {
