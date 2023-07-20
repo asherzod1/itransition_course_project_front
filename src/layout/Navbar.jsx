@@ -272,16 +272,18 @@ function Navbar({language, setLanguage}) {
                 </div>
             </div>
             <div className="flex sm:hidden px-3 mt-3 justify-center">
-                <AutoComplete
-                    popupClassName="certain-category-search-dropdown"
-                    dropdownMatchSelectWidth={500}
-                    style={{
-                        width: 300,
-                    }}
-                    options={searchOptions}
-                >
-                    <Input.Search onSearch={onSearch} size="large" placeholder={t('search')} enterButton />
-                </AutoComplete>
+                <div className="block w-[350px]">
+                    <AutoComplete
+                        popupClassName="certain-category-search-dropdown"
+                        dropdownMatchSelectWidth={'96%'}
+                        style={{
+                            width: '100%',
+                        }}
+                        options={searchOptions}
+                    >
+                        <Input.Search onSearch={onSearch} size="large" placeholder={t('search')} enterButton />
+                    </AutoComplete>
+                </div>
             </div>
         </div>
     );
