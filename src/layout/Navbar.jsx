@@ -276,7 +276,7 @@ function Navbar({language, setLanguage}) {
                     popupClassName="certain-category-search-dropdown"
                     dropdownMatchSelectWidth={500}
                     style={{
-                        width: 250,
+                        width: '100%',
                     }}
                     options={searchOptions}
                 >
