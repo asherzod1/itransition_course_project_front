@@ -13,7 +13,7 @@ if(!socket){
     socket = io(BASE_URL)
 }
 
-function Comments({language}) {
+function Comments({ language }) {
     const {t} = useTranslation()
     const {id} = useParams()
     const [collectionItem, setCollectionItem] = useState(null)
@@ -35,7 +35,7 @@ function Comments({language}) {
            .catch(()=>{
                message.error("Get collection item failed")
            })
-    },[language])
+    },[language, id])
     const user = JSON.parse(localStorage.getItem("current_user"))
     useEffect(() => {
         socket.emit('join_room', {collectionItemId: id, userId: user?.id})
