@@ -22,5 +22,6 @@
   "addInteger": "Add Integer field",
   "enterFieldName": "Enter field name ...",
   "writeComment": "Write comment ...",
-  "search": "Search ..."
+  "search": "Search ...",
+  "topic": "Topic"
 }

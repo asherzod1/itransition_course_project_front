@@ -49,3 +49,11 @@ export const getCollectionWithOutTokenApi = () => {
     };
     return HttpRequestHubWithToken(config);
 };
+
+export const getTopicsApi = () => {
+    const config = {
+        method: "GET",
+        url: `topics/`
+    };
+    return HttpRequestHubWithToken(config);
+};

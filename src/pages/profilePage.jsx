@@ -12,7 +12,7 @@ import {
     Collapse,
     Skeleton,
     Spin,
-    Empty
+    Empty, Select
 } from "antd";
 import {
     EditOutlined,
@@ -27,7 +27,7 @@ import CKEditorComponent from "../components/CKEditorComponent.jsx";
 import {
     deleteCollectionApi,
     editCollectionApi,
-    getCollectionApi,
+    getCollectionApi, getTopicsApi,
     postCollectionApi
 } from "../api/config/CollectionCrud.js";
 import {getStorage, ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
@@ -182,6 +182,10 @@ function ProfilePage({language}) {
         //
         // }
     };
+
+    const handleChangeSelect = (value) => {
+        console.log(`selected ${value}`);
+    };
     const handleUpload = async (info) => {
         console.log(info)
         const storageRef = ref(storage, 'images/' + info.file.name);
@@ -329,11 +333,18 @@ function ProfilePage({language}) {
 
     const [collectionLoading, setCollectionLoading] = useState(true);
     const [collections, setCollections] = useState([])
+    const [topics, setTopics] = useState([])
     useEffect(() => {
         getCollectionApi().then(res => {
             console.log(res)
             setCollections(res.data)
             setCollectionLoading(false)
+        })
+        getTopicsApi().then(res => {
+            setTopics(res.data.map(item => ({
+                label: item.name,
+                value: item.id
+            })))
         })
     }, [language])
 
@@ -381,9 +392,14 @@ function ProfilePage({language}) {
                                 <Meta
                                     title={collection.name}
                                     description={
-                                        <div dangerouslySetInnerHTML={{
-                                            __html: collection.description
-                                        }}>
+                                        <div>
+                                            <div dangerouslySetInnerHTML={{
+                                                __html: collection.description
+                                            }}>
+                                            </div>
+                                            <div>
+                                                Topic: {collection.topic.name}
+                                            </div>
                                         </div>
 
                                     }
@@ -455,6 +471,25 @@ function ProfilePage({language}) {
                         ]}
                     >
                         <CKEditorComponent/>
+                    </Form.Item>
+                    <Form.Item
+                        name="topicId"
+                        label="Topic"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Topic ' + t('required') + ' !',
+                            },
+                        ]}
+                    >
+                        <Select
+                            style={{
+                                width: '100%',
+                            }}
+                            onChange={handleChangeSelect}
+                            tokenSeparators={[',']}
+                            options={topics}
+                        />
                     </Form.Item>
                     <Form.Item label="" name="photo" valuePropName="fileList" getValueFromEvent={normFile}
                                isList={false}>

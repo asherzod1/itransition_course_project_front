@@ -22,5 +22,6 @@
   "addInteger": "Integer field qo'shish",
   "enterFieldName": "Field nomini kiriting ...",
   "writeComment": "Komment yozing ...",
-  "search": "Qidirish ..."
+  "search": "Qidirish ...",
+  "topic": "Mavzu"
 }

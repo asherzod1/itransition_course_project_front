@@ -2,6 +2,7 @@ import {Button, message, Switch, Table} from "antd";
 import {useEffect, useState} from "react";
 import {deleteUserApi, getUsersApi, updateUserRoleApi, updateUserStatusApi} from "../api/config/userCrud.js";
 import {DeleteOutlined} from "@ant-design/icons";
+import {TOKEN_ACCESS} from "../api/host.js";
 
 
 function UsersPage({language}) {
@@ -85,6 +86,11 @@ function UsersPage({language}) {
             let newUsers = users.filter(item=>item.id !== id)
             setUsers(newUsers)
             message.success("Delete user successfully")
+            if(id === user?.id){
+                localStorage.removeItem("current_user")
+                window.location.href = "/"
+                localStorage.removeItem(TOKEN_ACCESS)
+            }
         })
             .catch(()=>{
                 message.error("Delete user failed")
@@ -92,8 +98,8 @@ function UsersPage({language}) {
 
     }
     const changeRole = (value, id) =>{
-        let user = users.find(item=>item.id === id)
-        user.loadingRole = true
+        let useer = users.find(item=>item.id === id)
+        useer.loadingRole = true
         setUsers([...users])
         updateUserRoleApi({userId:id, role: value}).then(res =>{
             console.log(res.data)

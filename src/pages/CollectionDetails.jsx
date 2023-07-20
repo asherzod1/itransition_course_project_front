@@ -236,11 +236,14 @@ function CollectionDetails({language}) {
         ),
     }
     useEffect(() => {
-        getCollectionByIdApi(id).then(res => {
+        getCollectionByIdApi(id).then( async res => {
+            await res
             console.log(res)
             setCollection(res.data)
-            setExtraFields(JSON.parse(res.data.extraFields))
-            let newColumns = JSON.parse(res.data.extraFields).map(item => {
+            setPageLoading(false)
+            const parsedExtraFields = JSON.parse(res.data?.extraFields);
+            setExtraFields(parsedExtraFields)
+            let newColumns = parsedExtraFields.map(item => {
                 return {
                     title: item.value,
                     dataIndex: item.value,
@@ -249,7 +252,6 @@ function CollectionDetails({language}) {
             })
             console.log([...columns, ...newColumns, action])
             setTableColumns([...columns, ...newColumns, action])
-            setPageLoading(false)
         })
         getCollectionItems()
     }, [language])
@@ -352,11 +354,14 @@ function CollectionDetails({language}) {
                             </div>
                             <div className="flex-1 ml-[20px] py-[20px]">
                                 <h3>
-                                    {t('collectionName')}: {collection?.name}
+                                    {t('collectionName')}: <span className="font-bold">{collection?.name}</span>
                                 </h3>
                                 <h3>
-                                    {t('description')}: <div className="mt-2" dangerouslySetInnerHTML={{__html: collection?.description}}>
+                                    {t('description')}: <div className="mt-2 inline-block" dangerouslySetInnerHTML={{__html: collection?.description}}>
                                 </div>
+                                </h3>
+                                <h3>
+                                    {t('topic')}: {collection?.topic?.name}
                                 </h3>
                                 <h3>
                                     {t('createdAt')}: {collection?.createdAt?.split("T")[0]}

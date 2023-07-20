@@ -220,11 +220,13 @@ function Home({language}) {
                                     <Meta
                                         title={collection.name}
                                         description={
-                                            <div dangerouslySetInnerHTML={{
-                                                __html: collection.description
-                                            }}>
+                                            <div>
+                                                <div dangerouslySetInnerHTML={{
+                                                    __html: collection.description
+                                                }}>
+                                                </div>
+                                                <div>Topic: {collection.topic.name}</div>
                                             </div>
-
                                         }
                                     />
                                 </Card>
