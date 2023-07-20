@@ -40,7 +40,12 @@ function Comments({language}) {
         socket.emit('join_room', {collectionItemId: id, userId: user?.id})
         socket.on('comments', (data) => {
             console.log(data)
-            setComments(data)
+            let dataa = []
+            data?.forEach((item, index)=>{
+                if (index % 2 === 1)
+                    dataa.push(item)
+            })
+            setComments(dataa)
         })
     },[socket])
     return (

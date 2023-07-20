@@ -41,3 +41,11 @@ export const searchApi = (text) => {
     };
     return HttpRequestHubWithToken(config);
 };
+
+export const getUsersByIdApi = (id) => {
+    const config = {
+        method: "GET",
+        url: `users/${id}`,
+    };
+    return HttpRequestHubWithToken(config);
+};

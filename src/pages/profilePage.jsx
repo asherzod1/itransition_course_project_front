@@ -473,7 +473,7 @@ function ProfilePage({language}) {
                         <CKEditorComponent/>
                     </Form.Item>
                     <Form.Item
-                        name="topicId"
+                        name="idTopic"
                         label="Topic"
                         rules={[
                             {

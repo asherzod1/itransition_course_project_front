@@ -236,14 +236,25 @@ function CollectionDetails({language}) {
         ),
     }
     useEffect(() => {
-        getCollectionByIdApi(id).then( async res => {
-            await res
+        getCollectionByIdApi(id).then( res => {
             console.log(res)
             setCollection(res.data)
             setPageLoading(false)
-            const parsedExtraFields = JSON.parse(res.data?.extraFields);
+            const parsedExtraFields = res.data?.extraFields;
             setExtraFields(parsedExtraFields)
             let newColumns = parsedExtraFields.map(item => {
+                if(item.type === "checkbox"){
+                    return {
+                        title: item.value,
+                        dataIndex: item.value,
+                        key: item.value,
+                        render: (_, record) => (
+                            <>
+                                <Checkbox disabled={true} checked={record[item.value]} />
+                            </>
+                        )
+                    }
+                }
                 return {
                     title: item.value,
                     dataIndex: item.value,
@@ -382,13 +393,17 @@ function CollectionDetails({language}) {
                                 </div>
                             </div>
                             <div style={{border: '1px solid #ccc', borderRadius: "8px", boxShadow: "0 0 10px #ccc"}}>
-                                <Table
-                                    scroll={{x: 700}}
-                                    loading={tableLoading}
-                                    rowKey={record => record.id}
-                                    columns={tableColumns}
-                                    dataSource={dataForTable}
-                                />
+                                {
+                                    dataForTable?.length > 0 && tableColumns.length > 2 ?
+                                        <Table
+                                            scroll={{x: 700}}
+                                            loading={tableLoading}
+                                            rowKey={record => record.id}
+                                            columns={tableColumns}
+                                            dataSource={dataForTable}
+                                        />
+                                        :''
+                                }
                             </div>
                         </div>
                     </>
