@@ -5,7 +5,8 @@ import {Button, Empty, Input, message, Space} from "antd";
 import { SendOutlined } from '@ant-design/icons';
 import io from 'socket.io-client'
 import {useTranslation} from "react-i18next";
-import {BASE_URL} from "../api/host.js";
+import {BASE_URL, TOKEN_ACCESS} from "../api/host.js";
+import {getUsersByIdApi} from "../api/config/userCrud.js";
 
 let socket = null
 if(!socket){
@@ -48,6 +49,18 @@ function Comments({language}) {
             setComments(dataa)
         })
     },[socket])
+    useEffect(()=>{
+        if(user){
+            getUsersByIdApi(user?.id).then(res=>{
+                console.log(res)
+            })
+                .catch(()=>{
+                    localStorage.removeItem("current_user")
+                    localStorage.removeItem(TOKEN_ACCESS)
+                    window.location.href = "/login"
+                })
+        }
+    },[])
     return (
         <div className="containerr">
             <h2 className={"text-center font-bold mt-[30px]"}>

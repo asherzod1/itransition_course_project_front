@@ -6,7 +6,7 @@ import {
     Button,
     Checkbox,
     Collapse,
-    DatePicker,
+    DatePicker, Empty,
     Form,
     Input,
     InputNumber, message,
@@ -31,6 +31,8 @@ import weekday from 'dayjs/plugin/weekday';
 import localeData from "dayjs/plugin/localeData"
 import en_US from "antd/lib/locale/en_US";
 import {useTranslation} from "react-i18next";
+import {getUsersByIdApi} from "../api/config/userCrud.js";
+import {TOKEN_ACCESS} from "../api/host.js";
 dayjs.extend(weekday);
 dayjs.extend(localeData)
 
@@ -267,6 +269,18 @@ function CollectionDetails({language}) {
         getCollectionItems()
     }, [language])
 
+    useEffect(()=>{
+        if(user){
+            getUsersByIdApi(user?.id).then(res=>{
+                console.log(res)
+            })
+                .catch(()=>{
+                    localStorage.removeItem("current_user")
+                    localStorage.removeItem(TOKEN_ACCESS)
+                    window.location.href = "/login"
+                })
+        }
+    },[])
     function isValidDateFormat(dateString) {
         const date = new Date(dateString);
         return !isNaN(date) && date.toString() !== 'Invalid Date';
@@ -402,7 +416,10 @@ function CollectionDetails({language}) {
                                             columns={tableColumns}
                                             dataSource={dataForTable}
                                         />
-                                        :''
+                                        :
+                                        <div className="py-5">
+                                            <Empty description={"No Collection Items"}/>
+                                        </div>
                                 }
                             </div>
                         </div>

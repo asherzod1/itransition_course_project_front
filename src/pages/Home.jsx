@@ -19,6 +19,8 @@ import {
 } from "../api/config/CollectionItemCrud.js";
 import {getRandomColor} from "../helpers/functions.js";
 import {useTranslation} from "react-i18next";
+import {getUsersByIdApi} from "../api/config/userCrud.js";
+import {TOKEN_ACCESS} from "../api/host.js";
 
 const { Meta } = Card;
 
@@ -29,23 +31,29 @@ function Home({language}) {
     const {t} = useTranslation()
     const user = JSON.parse(localStorage.getItem("current_user"))
     console.log(user)
+    const [tableLoading, setTableLoading] = useState(true)
     const getCollectionItems = () =>{
+        setTableLoading(true)
         if(user?.id){
             getCollectionItemApi(user?.id).then(res=>{
                 console.log(res.data)
                 setCollectionItems(res.data)
+                setTableLoading(false)
             })
                 .catch(()=>{
                     message.error("Get collection items failed")
+                    setTableLoading(false)
                 })
         }
         else {
             getCollectionItemApi().then(res=>{
                 console.log(res.data)
                 setCollectionItems(res.data)
+                setTableLoading(false)
             })
                 .catch(()=>{
                     message.error("Get collection items failed")
+                    setTableLoading(false)
                 })
         }
     }
@@ -70,6 +78,19 @@ function Home({language}) {
                 message.error("Get tags failed")
             })
     },[language])
+
+    useEffect(()=>{
+        if(user){
+            getUsersByIdApi(user?.id).then(res=>{
+                console.log(res)
+            })
+                .catch(()=>{
+                    localStorage.removeItem("current_user")
+                    localStorage.removeItem(TOKEN_ACCESS)
+                    window.location.href = "/login"
+                })
+        }
+    },[])
 
     const columns = [
         {
@@ -183,6 +204,7 @@ function Home({language}) {
             <h2 className="my-3">{t('collectionItems')}:</h2>
             <div className="" style={{border: '1px solid #ccc', borderRadius: "8px", boxShadow: "0 0 10px #ccc"}}>
                 <Table
+                    loading={tableLoading}
                     scroll={{x: 700}}
                     style={{ borderRadius:'8px'}}
                     rowKey={record => record.id}

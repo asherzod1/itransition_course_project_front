@@ -4,6 +4,8 @@ import {deleteLikeApi, editLikeApi, getCollectionItemByTagApi, postLikeApi} from
 import {Button, message, Space, Table, Tag} from "antd";
 import {CommentOutlined, DislikeOutlined, LikeOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
+import {getUsersByIdApi} from "../api/config/userCrud.js";
+import {TOKEN_ACCESS} from "../api/host.js";
 
 function ByTags({language}) {
     const user = JSON.parse(localStorage.getItem("current_user"))
@@ -118,8 +120,17 @@ function ByTags({language}) {
     }
     useEffect(()=>{
         getCollectionItems()
+        if(user){
+            getUsersByIdApi(user?.id).then(res=>{
+                console.log(res)
+            })
+                .catch(()=>{
+                    localStorage.removeItem("current_user")
+                    localStorage.removeItem(TOKEN_ACCESS)
+                    window.location.href = "/login"
+                })
+        }
     },[])
-
     return (
         <div className={"containerr mt-[30px]"}>
             <h2 className="my-3">{t('collectionItems')}:</h2>
