@@ -272,7 +272,16 @@ function Navbar({language, setLanguage}) {
                 </div>
             </div>
             <div className="block sm:hidden px-3 mt-3">
-                <Search allowClear placeholder={t('search')} onSearch={onSearch} enterButton />
+                <AutoComplete
+                    popupClassName="certain-category-search-dropdown"
+                    dropdownMatchSelectWidth={500}
+                    style={{
+                        width: 250,
+                    }}
+                    options={searchOptions}
+                >
+                    <Input.Search onSearch={onSearch} size="large" placeholder="input here" enterButton />
+                </AutoComplete>
             </div>
         </div>
     );
