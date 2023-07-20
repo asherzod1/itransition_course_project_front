@@ -5,10 +5,11 @@ import {Button, Empty, Input, message, Space} from "antd";
 import { SendOutlined } from '@ant-design/icons';
 import io from 'socket.io-client'
 import {useTranslation} from "react-i18next";
+import {BASE_URL} from "../api/host.js";
 
 let socket = null
 if(!socket){
-    socket = io.connect('wss://squeamish-shape-production.up.railway.app/')
+    socket = io(BASE_URL)
 }
 
 function Comments({language}) {

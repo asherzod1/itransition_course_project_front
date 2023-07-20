@@ -140,10 +140,12 @@ function Navbar({language, setLanguage}) {
     {/*</Link>*/}
   </span>
     );
-    const renderItem = (title, count) => ({
+    const renderItem = (title, record, modelName) => ({
         value: title,
         label: (
-            <div
+            <Link
+                to={modelName === "Collection" ? `collection/${record?.id}` : modelName === "CollectionItem" ? `comment/${record?.id}` : modelName === "Tag" ? `tags/${record?.id}` : '#' }
+
                 style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -152,7 +154,7 @@ function Navbar({language, setLanguage}) {
                 {title}
                 <span>
       </span>
-            </div>
+            </Link>
         ),
     });
     const options = [
@@ -174,9 +176,21 @@ function Navbar({language, setLanguage}) {
         searchApi(value).then(res=>{
             console.log(res)
             setSearchOptions(res.data.map(item=>{
+                if(item.modelName === 'Comment'){
+                    return {
+                        label: renderTitle(item.modelName, item.results?.length),
+                        options: item.results.map(item2=>renderItem(item2[`text`], item2, item.modelName))
+                    }
+                }
+                if(item.modelName === 'Tag'){
+                    return {
+                        label: renderTitle(item.modelName, item.results?.length),
+                        options: item.results.map(item2=>renderItem(item2[`name`], item2, item.modelName))
+                    }
+                }
                 return {
                     label: renderTitle(item.modelName, item.results?.length),
-                    options: item.results.map(item2=>renderItem(item2[`name_${language}`], 10000))
+                    options: item.results.map(item2=>renderItem(item2[`name_${language}`], item2, item.modelName))
                 }
             }))
         })
