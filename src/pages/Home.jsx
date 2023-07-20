@@ -134,7 +134,7 @@ function Home({language}) {
                             <Button onClick={()=>navigate(`/comment/${record.id}`)}>
                                 <CommentOutlined />
                             </Button>
-                            <div>{record.comments}</div>
+                            <div>{parseInt(Number(record.comments)/2)}</div>
                         </Space>
                         <Space align={"center"} size={"small"} direction={"vertical"}>
                             <Button disabled={!user} type={record.like?.userValue === true ? "primary" : "default"}  onClick={()=>setLike(record.id, true, record.like?.userValue, record.like.userLikeId)}>
