@@ -1,42 +1,65 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+#components-form-demo-normal-login .login-form {
+    max-width: 300px!important;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+#components-form-demo-normal-login .login-form-forgot {
+    float: right!important;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+#components-form-demo-normal-login .ant-col-rtl .login-form-forgot {
+    float: left!important;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+#components-form-demo-normal-login .login-form-button {
+    width: 100% !important;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.containerr{
+    max-width: 1440px;
+    margin: 0 auto;
+}
+@media (max-width: 1440px) {
+    .containerr {
+        max-width: 92%;
+    }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+:root {
+    --bg-color: #fff;
+    --headings-color: #000000;
+    --desc-color: #000000;
 }
 
-.card {
-  padding: 2em;
+.container-background{
+    min-height: 100vh !important;
+}
+body[data-theme="dark-theme"] {
+    --bg-color: #222;
+    --headings-color: #fff;
+    --desc-color: #fff;
 }
 
-.read-the-docs {
-  color: #888;
+body[data-theme="sea-theme"] {
+    --bg-color: #ffe699;
+    --headings-color: #96ceb4;
+    --desc-color: #ff9292;
+}
+
+body[data-theme="sharp-theme"] {
+    --bg-color: #ff7777;
+    --headings-color: #a2416b;
+    --desc-color: #852747;
+}
+
+.container-background{
+    background: var(--bg-color);
+}
+.theme-login{
+    background: var(--bg-color);
+}
+
+h2, h3, h5, h6 {
+    color: var(--headings-color);
+}
+
+.ck.ck-editor__editable_inline {
+    color: #000;
 }
