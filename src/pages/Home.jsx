@@ -252,6 +252,7 @@ function Home({language}) {
                                                 }}>
                                                 </div>
                                                 <div>Topic: {collection.topic.name}</div>
+                                                <div>Elements: {collection.collectionItemsCount}</div>
                                             </div>
                                         }
                                     />
