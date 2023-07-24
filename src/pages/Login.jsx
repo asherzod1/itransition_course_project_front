@@ -1,4 +1,4 @@
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import {ArrowLeftOutlined, LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Button, Checkbox, Form, Input, message, Spin} from 'antd';
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
@@ -37,10 +37,15 @@ function Login() {
             navigate("/")
         })
             .catch((err)=>{
-console.log(err)
+                console.log(err)
                 message.error(err.response.data.error)
             })
     };
+
+    const backToHome = () => {
+        navigate("/")
+    }
+
     return (
         <div className="flex h-[100vh] w-[100%] justify-center items-center theme-login">
             {
@@ -48,7 +53,16 @@ console.log(err)
                     <Spin size="large" />
                     :
                     <div className={"w-[90%] md:w-[400px]"}>
-                        <h2 className="text-center">Login</h2>
+                        <div className="mb-3">
+                            <Button onClick={()=>backToHome()}>
+                                <ArrowLeftOutlined className="mr-1"/>
+                                Home
+                            </Button>
+                            <h2 className="text-center">
+
+                                Login
+                            </h2>
+                        </div>
                         <Form
                             name="normal_login"
                             className="login-form"

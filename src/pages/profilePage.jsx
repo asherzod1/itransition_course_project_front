@@ -1,5 +1,4 @@
 import {
-    Avatar,
     Button,
     Card,
     Col,
@@ -10,17 +9,15 @@ import {
     Upload,
     message,
     Collapse,
-    Skeleton,
     Spin,
-    Empty, Select
+    Empty, Select, Space
 } from "antd";
 import {
     EditOutlined,
-    EllipsisOutlined,
-    SettingOutlined,
     PlusOutlined,
     EyeOutlined,
-    DeleteOutlined
+    DeleteOutlined,
+    DownloadOutlined
 } from "@ant-design/icons";
 import {useEffect, useState} from "react";
 import CKEditorComponent from "../components/CKEditorComponent.jsx";
@@ -34,6 +31,7 @@ import {getStorage, ref, uploadBytesResumable, getDownloadURL} from "firebase/st
 import {initializeApp} from "firebase/app";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
+import Papa from 'papaparse';
 
 const {Meta} = Card;
 
@@ -128,10 +126,21 @@ function ProfilePage({language}) {
         setIsModalOpen(true)
         let collection = collections.find(item => item.id === id)
         form.setFieldsValue(collection)
-        collection.extraFields.forEach(item => {
-            extraFields.find(item2 => item2.type === item.type).value = item.value
+        let types = ["checkbox", "date", "string", "text", "integer"]
+        let newExtraFields = []
+        types.forEach(type => {
+            collection.extraFields.filter(item => item.type === type).forEach((item2, index) => {
+                newExtraFields.push({
+                    index: index,
+                    type: type,
+                    value: item2.value
+                })
+            })
         })
-        setExtraFields([...extraFields])
+        // collection.extraFields.forEach(item => {
+        //     extraFields.find(item2 => item2.type === item.type).value = item.value
+        // })
+        setExtraFields([...newExtraFields])
         setFileList([{url: `${collection.photo}`}])
         setNewPhotoUrl(collection.photo)
     }
@@ -145,29 +154,34 @@ function ProfilePage({language}) {
 
     const [extraFields, setExtraFields] = useState([
         {
+            index: 0,
             type: "checkbox",
             value: "",
         },
         {
+            index: 0,
             type: "date",
             value: "",
         },
         {
+            index: 0,
             type: "string",
             value: "",
         },
         {
+            index: 0,
             type: "text",
             value: "",
         },
         {
+            index: 0,
             type: "integer",
             value: null,
         },
     ])
 
-    const onChangeExtraFields = (value, type) => {
-        let element = extraFields.find(item => item.type === type)
+    const onChangeExtraFields = (value, type, index) => {
+        let element = extraFields.find(item => (item.type === type && item.index === index))
         element.value = value
         setExtraFields([...extraFields])
     }
@@ -265,60 +279,133 @@ function ProfilePage({language}) {
     const [postCollectionLoading, setPostCollectionLoading] = useState(false);
     const [newPhotoUrl, setNewPhotoUrl] = useState('');
 
+    const addNewOne = (type, newIndex) =>{
+        let newExtraField = {
+            index: newIndex,
+            type: type,
+            value: "",
+        }
+        setExtraFields([...extraFields, newExtraField])
+    }
+
+    const deleteExtraFields = (type, index) =>{
+        if(extraFields.filter(item => item.type === type).length === 1){
+            extraFields.find(item => item.type === type).value = ""
+            setExtraFields([...extraFields])
+            return;
+        }
+
+        // Reindex by types
+        let newAr = extraFields.filter(item => !(item.type === type && item.index === index))
+        let typeArray = newAr.filter(item=>item.type===type).map((item, index) => {
+            return {
+                ...item,
+                index: index
+            }
+        })
+        let finalArray = newAr.filter(item => item.type !== type)
+        setExtraFields([...finalArray, ...typeArray])
+    }
+
+
+    useEffect(()=>{
+        console.log(extraFields)
+    },[extraFields])
+
     const itemsCollapse = [
         {
             key: '1',
             label: t('addCheckbox'),
             children: <div>
-                <Input
-                    value={extraFields.find(item=>item.type ==="checkbox")?.value}
-                    placeholder={t('enterFieldName')}
-                    onChange={(e)=>onChangeExtraFields(e.target.value, "checkbox")}
-                />
+                {
+                    extraFields.filter(item => item.type === "checkbox").map(extraField => (
+                        <Input
+                            suffix={<DeleteOutlined onClick={()=>deleteExtraFields(extraField.type, extraField.index)} style={{cursor:"pointer", color:"red"}}/>}
+                            className="mb-3"
+                            value={extraField?.value}
+                            placeholder={t('enterFieldName')}
+                            onChange={(e)=>onChangeExtraFields(e.target.value, "checkbox", extraField?.index)}
+                        />
+                    ))
+                }
+
+                <Button disabled={extraFields.filter(item => item.type === "checkbox").length > 2} onClick={()=>addNewOne("checkbox", extraFields.filter(item => item.type === "checkbox")?.length)}><PlusOutlined/> Add new one</Button>
             </div>,
         },
         {
             key: '2',
             label: t('addDate'),
             children: <div>
-                <Input
-                    value={extraFields.find(item=>item.type ==="date")?.value}
-                    placeholder={t('enterFieldName')}
-                    onChange={(e)=>onChangeExtraFields(e.target.value, "date")}
-                />
+                {
+                    extraFields.filter(item => item.type === "date").map(extraField => (
+                        <Input
+                            suffix={<DeleteOutlined onClick={()=>deleteExtraFields(extraField.type, extraField.index)} style={{cursor:"pointer", color:"red"}}/>}
+                            className="mb-3"
+                            value={extraField?.value}
+                            placeholder={t('enterFieldName')}
+                            onChange={(e)=>onChangeExtraFields(e.target.value, "date", extraField?.index)}
+                        />
+                    ))
+                }
+
+                <Button disabled={extraFields.filter(item => item.type === "date").length > 2} onClick={()=>addNewOne("date", extraFields.filter(item => item.type === "date")?.length)}><PlusOutlined/> Add new one</Button>
             </div>,
         },
         {
             key: '3',
             label: t('addString'),
             children: <div>
-                <Input
-                    value={extraFields.find(item=>item.type ==="string")?.value}
-                    placeholder={t('enterFieldName')}
-                    onChange={(e)=>onChangeExtraFields(e.target.value, "string")}
-                />
+                {
+                    extraFields.filter(item => item.type === "string").map(extraField => (
+                        <Input
+                            suffix={<DeleteOutlined onClick={()=>deleteExtraFields(extraField.type, extraField.index)} style={{cursor:"pointer", color:"red"}}/>}
+                            className="mb-3"
+                            value={extraField?.value}
+                            placeholder={t('enterFieldName')}
+                            onChange={(e)=>onChangeExtraFields(e.target.value, "string", extraField?.index)}
+                        />
+                    ))
+                }
+
+                <Button disabled={extraFields.filter(item => item.type === "string").length > 2} onClick={()=>addNewOne("string", extraFields.filter(item => item.type === "string")?.length)}><PlusOutlined/> Add new one</Button>
             </div>,
         },
         {
             key: '4',
             label: t('addText'),
             children: <div>
-                <Input
-                    value={extraFields.find(item=>item.type ==="text")?.value}
-                    placeholder={t('enterFieldName')}
-                    onChange={(e)=>onChangeExtraFields(e.target.value, "text")}
-                />
+                {
+                    extraFields.filter(item => item.type === "text").map(extraField => (
+                        <Input
+                            suffix={<DeleteOutlined onClick={()=>deleteExtraFields(extraField.type, extraField.index)} style={{cursor:"pointer", color:"red"}}/>}
+                            className="mb-3"
+                            value={extraField?.value}
+                            placeholder={t('enterFieldName')}
+                            onChange={(e)=>onChangeExtraFields(e.target.value, "text", extraField?.index)}
+                        />
+                    ))
+                }
+
+                <Button disabled={extraFields.filter(item => item.type === "text").length > 2} onClick={()=>addNewOne("text", extraFields.filter(item => item.type === "text")?.length)}><PlusOutlined/> Add new one</Button>
             </div>,
         },
         {
             key: '5',
             label: t('addInteger'),
             children: <div>
-                <Input
-                    value={extraFields.find(item=>item.type ==="integer")?.value}
-                    placeholder={t('enterFieldName')}
-                    onChange={(e)=>onChangeExtraFields(e.target.value, "integer")}
-                />
+                {
+                    extraFields.filter(item => item.type === "integer").map(extraField => (
+                        <Input
+                            suffix={<DeleteOutlined onClick={()=>deleteExtraFields(extraField.type, extraField.index)} style={{cursor:"pointer", color:"red"}}/>}
+                            className="mb-3"
+                            value={extraField?.value}
+                            placeholder={t('enterFieldName')}
+                            onChange={(e)=>onChangeExtraFields(e.target.value, "integer", extraField?.index)}
+                        />
+                    ))
+                }
+
+                <Button disabled={extraFields.filter(item => item.type === "integer").length > 2} onClick={()=>addNewOne("integer", extraFields.filter(item => item.type === "integer")?.length)}><PlusOutlined/> Add new one</Button>
             </div>,
         },
     ];
@@ -348,15 +435,41 @@ function ProfilePage({language}) {
         })
     }, [language])
 
+    const generateCSV = () =>{
+        let dataForCSV = collections.map(item => {
+            let obj = item
+            delete obj.extraFields
+            obj.topic = obj.topic.name
+            obj.author = obj.author.name
+            return obj
+        })
+        const csv = Papa.unparse(dataForCSV)
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'collections.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
     return (
         <div className="containerr mt-[40px]">
+            <div className="flex justify-end sm:hidden">
+                <Button className="" onClick={()=>generateCSV()}><DownloadOutlined /> Import CSV file</Button>
+            </div>
             <div className="mb-[30px] flex justify-between items-center">
                 <h2 className="my-5 font-bold">{t('collections')}:</h2>
-                <Button type={"primary"} onClick={() => showModal()}>
-                    <PlusOutlined/>
-                    {t('add')}
-                </Button>
+                <Space size={"small"}>
+                    <Button className="hidden sm:block" onClick={()=>generateCSV()}><DownloadOutlined /> Import CSV file</Button>
+                    <Button type={"primary"} onClick={() => showModal()}>
+                        <PlusOutlined/>
+                        {t('add')}
+                    </Button>
+                </Space>
             </div>
+
             <Row wrap={true} gutter={[16, 16]}>
                 {
                     collectionLoading ?
@@ -374,13 +487,14 @@ function ProfilePage({language}) {
                                 shadow={true}
                                 style={{
                                     width: '100%',
+                                    boxShadow:"0 0 10px rgba(0,0,0,0.2)"
                                 }}
                                 cover={
                                     // <CollectionImage photo={collection.photo} />
                                     <img
                                         alt="example"
                                         src={collection.photo}
-                                        className="object-cover h-[220px] w-full"
+                                        className="object-cover h-[220px] w-[96%]"
                                     />
                                 }
                                 actions={[

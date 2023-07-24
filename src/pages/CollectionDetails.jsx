@@ -77,19 +77,19 @@ function CollectionDetails({language}) {
                 <>
                     <Space size="small">
                         <Space align={"center"} size={"small"} direction={"vertical"}>
-                             <Button onClick={()=>navigate(`/comment/${record.id}`)}>
-                                 <CommentOutlined />
-                             </Button>
+                            <Button onClick={()=>navigate(`/comment/${record.id}`)}>
+                                <CommentOutlined />
+                            </Button>
                             <div>{parseInt(Number(record.comments)/2)}</div>
                         </Space>
                         <Space align={"center"} size={"small"} direction={"vertical"}>
-                            <Button disabled={user?.id ? false : true} type={record.like?.userValue === true ? "primary" : "default"}  onClick={()=>setLike(record.id, true, record.like?.userValue, record.like.userLikeId)}>
+                            <Button loading={record.loading} disabled={user?.id ? false : true} type={record.like?.userValue === true ? "primary" : "default"}  onClick={()=>setLike(record.id, true, record.like?.userValue, record.like.userLikeId)}>
                                 <LikeOutlined />
                             </Button>
                             <div>{record.like?.likes}</div>
                         </Space>
                         <Space align={"center"} size={"small"} direction={"vertical"}>
-                            <Button disabled={user?.id ? false : true} type={record.like?.userValue === false ? "primary" : "default"} onClick={()=>setLike(record.id, false, record.like?.userValue, record.like.userLikeId)}>
+                            <Button loading={record.loading} disabled={user?.id ? false : true} type={record.like?.userValue === false ? "primary" : "default"} onClick={()=>setLike(record.id, false, record.like?.userValue, record.like.userLikeId)}>
                                 <DislikeOutlined />
                             </Button>
                             <div>{record.like?.dislikes}</div>
@@ -97,7 +97,7 @@ function CollectionDetails({language}) {
                     </Space>
                 </>
             )
-        },
+        }
     ];
     const {id} = useParams();
     const [collection, setCollection] = useState(null);
@@ -214,7 +214,8 @@ function CollectionDetails({language}) {
                 })
                 return {
                     ...item,
-                    ...obj
+                    ...obj,
+                    loading: false
                 }
             })
             console.log(dataa)
@@ -237,6 +238,9 @@ function CollectionDetails({language}) {
             </Space>
         ),
     }
+
+
+
     useEffect(() => {
         getCollectionByIdApi(id).then( res => {
             console.log(res)
@@ -329,28 +333,26 @@ function CollectionDetails({language}) {
     const [likeLoading, setLikeLoading] = useState(false)
     console.log(dataForTable)
     const setLike = (id, value, isUserSelected, editLikeId) => {
-        setLikeLoading(true)
+        // console.log(dataForTable, id)
+        // dataForTable.find(item => item.id === id).loading = true
+        // setDataForTable([...dataForTable])
         if(String(isUserSelected) === String(value)){
             console.log("same")
             deleteLikeApi(editLikeId).then((res) => {
                 message.success("Success")
-                setLikeLoading(false)
                 getCollectionItems()
             })
                 .catch(()=>{
                     message.error("Error")
-                    setLikeLoading(false)
                 })
         }
         else if(isUserSelected === 'none'){
             postLikeApi({collectionItemId: id, value}).then((res) => {
                 message.success("Success")
-                setLikeLoading(false)
                 getCollectionItems()
             })
                 .catch(()=>{
                     message.error("Error")
-                    setLikeLoading(false)
                 })
         }
         else {
