@@ -110,11 +110,14 @@ function ByTags({language}) {
             }
         }
     }
+    const [loading, setLoading] = useState(true)
     const getCollectionItems = () => {
         getCollectionItemByTagApi(id, user?.id).then(res=>{
             setCollectionItems(res.data)
+            setLoading(false)
         })
             .catch(()=>{
+                setLoading(false)
                 message.error("Error")
             })
     }
@@ -140,6 +143,7 @@ function ByTags({language}) {
             <h2 className="my-3">{t('collectionItems')}:</h2>
             <div className="" style={{border: '1px solid #ccc', borderRadius: "8px", boxShadow: "0 0 10px #ccc"}}>
                 <Table
+                    loading={loading}
                     scroll={{x: 700}}
                     style={{ borderRadius:'8px'}}
                     rowKey={record => record.id}
