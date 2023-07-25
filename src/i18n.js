@@ -15,4 +15,5 @@ i18next
         whitelist: Languages,
         saveMissing: true,
         fallbackLng: 'en',
+            lng:'en'
     })
