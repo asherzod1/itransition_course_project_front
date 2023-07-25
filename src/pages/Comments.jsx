@@ -39,10 +39,10 @@ function Comments({ language }) {
     const user = JSON.parse(localStorage.getItem("current_user"))
     useEffect(() => {
         socket.emit('join_room', {collectionItemId: id, userId: user?.id})
-        socket.on('comments', (data) => {
+        socket.on('comments', async (data) => {
             console.log(data)
             let dataa = []
-            data?.forEach((item, index)=>{
+            await data?.forEach((item, index)=>{
                 if (index % 2 === 1)
                     dataa.push(item)
             })
@@ -112,7 +112,7 @@ function Comments({ language }) {
             </div>
             <div className="px-[0px] mt-4">
                 <Space.Compact style={{ width: '100%' }}>
-                    <Input onChange={(e)=>setText(e.target.value)} placeholder={t('writeComment')} />
+                    <Input value={text} onChange={(e)=>setText(e.target.value)} placeholder={t('writeComment')} />
                     <Button disabled={user?.id ? false : true} onClick={()=>sendMessage()} type="primary"> <SendOutlined /> </Button>
                 </Space.Compact>
             </div>
