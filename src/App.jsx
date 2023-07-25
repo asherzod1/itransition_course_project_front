@@ -19,10 +19,6 @@ import ByTags from "./pages/ByTags.jsx";
 function App() {
     const themee = useSelector(state => state.theme);
     let currentLang = localStorage.getItem('i18nextLng')?.split("-")[0]
-    // if (!currentLang || currentLang !== 'en' || currentLang !== 'uz'){
-    //     localStorage.setItem('i18nextLng', 'en')
-    //     currentLang = 'en'
-    // }
     const [language, setLanguage] = useState(currentLang)
     const { defaultAlgorithm, darkAlgorithm } = theme;
     return (
