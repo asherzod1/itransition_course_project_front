@@ -142,6 +142,7 @@ function UsersPage({language}) {
         <div className="containerr">
             <h2 className="my-3 font-bold">Users:</h2>
             <Table
+                scroll={{x: 700}}
                 rowKey={record => record.id}
                 columns={columns}
                 dataSource={users}
