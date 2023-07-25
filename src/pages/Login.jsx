@@ -97,15 +97,15 @@ function Login() {
                                     placeholder="Password"
                                 />
                             </Form.Item>
-                            <Form.Item>
-                                <Form.Item name="remember" valuePropName="checked" noStyle>
-                                    <Checkbox>Remember me</Checkbox>
-                                </Form.Item>
+                            {/*<Form.Item>*/}
+                            {/*    <Form.Item name="remember" valuePropName="checked" noStyle>*/}
+                            {/*        <Checkbox>Remember me</Checkbox>*/}
+                            {/*    </Form.Item>*/}
 
-                                <a className="login-form-forgot" style={{float:"right"}} href="">
-                                    Forgot password
-                                </a>
-                            </Form.Item>
+                            {/*    <a className="login-form-forgot" style={{float:"right"}} href="">*/}
+                            {/*        Forgot password*/}
+                            {/*    </a>*/}
+                            {/*</Form.Item>*/}
 
                             <Form.Item>
                                 <Button type="primary" htmlType="submit" className="login-form-button w-[100%]">
